@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SI-KOBAR TACTICAL | Security System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .tactical-border { border: 1px solid rgba(239, 68, 68, 0.3); }
+        .glow { box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); }
+    </style>
+</head>
+<body class="bg-black text-slate-200 min-h-screen p-4 font-sans selection:bg-red-900">
+   
+    <div class="w-full max-w-md mx-auto space-y-4">
+
+        <header class="w-full bg-slate-950 p-4 rounded-xl tactical-border flex justify-between items-center shadow-lg">
+            <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-red-600 animate-pulse rounded-full"></div>
+                <h1 class="font-black text-red-600 uppercase tracking-widest text-xs">SI-KOBAR</h1>
+            </div>
+            <button onclick="bukaProfil()" class="text-emerald-400 hover:text-emerald-300 transition flex items-center space-x-2">
+                <span class="text-[10px] font-bold uppercase">Monitoring</span>
+                <i class="fas fa-user-circle text-xl"></i>
+            </button>
+        </header>
+       
+        <div class="w-full bg-slate-950 rounded-2xl tactical-border overflow-hidden glow">
+            <div class="bg-gradient-to-b from-slate-900 to-black p-6 text-center border-b border-red-900/30">
+                <i class="fas fa-satellite-dish text-4xl mb-3 text-red-600 animate-bounce"></i>
+                <h1 class="text-2xl font-black uppercase tracking-tighter text-white">Lapas Tobelo</h1>
+                <p class="text-red-700 text-[9px] font-bold uppercase tracking-[0.3em]">Command & Control Center</p>
+            </div>
+
+            <div class="p-5 space-y-5">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-black p-3 rounded-lg border border-slate-800 text-center">
+                        <p class="text-[9px] text-slate-500 font-bold uppercase">Time</p>
+                        <p id="txt-jam" class="font-mono text-lg text-red-500 font-bold">--:--:--</p>
+                    </div>
+                    <div class="bg-black p-3 rounded-lg border border-slate-800 text-center">
+                        <p class="text-[9px] text-slate-500 font-bold uppercase">Date</p>
+                        <p id="txt-tgl" class="font-bold text-xs text-slate-300">--/--/--</p>
+                    </div>
+                </div>
+
+                <div class="bg-black p-4 rounded-lg border border-red-900/30">
+                    <div class="flex items-center justify-between mb-1">
+                        <p class="text-[9px] text-red-700 font-bold uppercase">Location</p>
+                        <span class="flex h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-crosshairs text-red-600"></i>
+                        <p id="txt-lokasi" class="text-[11px] font-mono text-white italic">Synchronizing...</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[9px] text-slate-500 font-bold uppercase ml-1">Regu Pengamanan</label>
+                        <select id="rupam" class="w-full bg-black border border-slate-800 rounded-lg p-3 text-sm outline-none focus:border-red-600 transition">
+                            <option value="RUPAM I">RUPAM I</option>
+                            <option value="RUPAM II">RUPAM II</option>
+                            <option value="RUPAM III">RUPAM III</option>
+                            <option value="RUPAM IV">RUPAM IV</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[9px] text-slate-500 font-bold uppercase ml-1">Nama Petugas</label>
+                        <input type="text" id="nama" placeholder="Masukan Nama Petugas..." 
+                               class="w-full bg-black border border-slate-800 rounded-lg p-3 text-sm outline-none focus:border-red-600 transition">
+                    </div>
+
+                    <div>
+                        <label class="text-[9px] text-slate-500 font-bold uppercase ml-1">Area Kontrol</label>
+                        <select id="area" class="w-full bg-black border border-slate-800 rounded-lg p-3 text-sm outline-none focus:border-red-600 transition">
+                            <option value="BRANDGANG SELATAN">BRANDGANG SELATAN</option>
+                            <option value="BRANDGANG UTARA">BRANDGANG UTARA</option>
+                        </select>
+                    </div>
+                   
+                    <div>
+                        <label class="text-[9px] text-slate-500 font-bold uppercase ml-1">Situasi</label>
+                        <textarea id="catatan" rows="2" placeholder="Contoh: Tembok & kawat berduri dalam keadaan baik...." 
+                                  class="w-full bg-black border border-slate-800 rounded-lg p-3 text-sm outline-none focus:border-red-600 transition"></textarea>
+                    </div>
+
+                    <div class="bg-black p-4 rounded-xl border border-slate-800">
+                        <label class="text-[9px] text-slate-500 font-bold block mb-2 uppercase">Capture</label>
+                        <div class="flex items-center space-x-3">
+                            <input type="file" id="fotoInput" accept="image/*" capture="environment" class="hidden" onchange="previewFoto(event)">
+                            <button onclick="document.getElementById('fotoInput').click()" class="bg-blue-900/40 border border-blue-500 text-blue-400 px-4 py-2 rounded text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition">
+                                <i class="fas fa-camera mr-2"></i> Camera
+                            </button>
+                            <div id="previewContainer" class="hidden">
+                                <img id="imgPreview" class="w-10 h-10 object-cover rounded border border-red-600">
+                            </div>
+                            <p id="statusFoto" class="text-[10px] text-slate-600 italic uppercase">No data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="buatPDF()" class="bg-slate-900 border border-red-900 text-red-500 font-bold py-3 rounded-xl transition flex flex-col items-center justify-center hover:bg-red-950">
+                        <i class="fas fa-file-pdf mb-1"></i>
+                        <span class="text-[9px] uppercase">Generate PDF</span>
+                    </button>
+                    
+                    <button onclick="kirimWA()" class="bg-red-700 text-white font-black py-3 rounded-xl transition flex flex-col items-center justify-center shadow-lg shadow-red-900/20 hover:bg-red-600">
+                        <i class="fab fa-whatsapp mb-1 text-lg"></i>
+                        <span class="text-[9px] uppercase">Transmit WA</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-black p-3 text-center border-t border-slate-900">
+                <p class="text-[8px] text-slate-600 uppercase tracking-[0.3em]">Security Protocol - Latobe Digital</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        function bukaProfil() {
+            const nama = document.getElementById('nama').value;
+            alert(nama ? `CALL SIGN: ${nama}\nSTATUS: ACTIVE` : "SYSTEM: Identify yourself!");
+        }
+
+        function previewFoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imgPreview').src = e.target.result;
+                    document.getElementById('previewContainer').classList.remove('hidden');
+                    document.getElementById('statusFoto').innerText = "READY";
+                    document.getElementById('statusFoto').classList.add('text-red-500');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('txt-jam').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
+            document.getElementById('txt-tgl').innerText = now.toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
+        }, 1000);
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                document.getElementById('txt-lokasi').innerText = `${pos.coords.latitude}, ${pos.coords.longitude}`;
+            }, (err) => {
+                document.getElementById('txt-lokasi').innerText = "GPS BLOCKED";
+            });
+        }
+
+        function buatPDF() {
+            const nama = document.getElementById('nama').value;
+            const rupam = document.getElementById('rupam').value;
+            const area = document.getElementById('area').value;
+            const catatan = document.getElementById('catatan').value || "AMAN TERKENDALI";
+            const jam = document.getElementById('txt-jam').innerText;
+            const tgl = document.getElementById('txt-tgl').innerText;
+            const lokasi = document.getElementById('txt-lokasi').innerText;
+
+            if (!nama) { 
+                alert("ACCESS DENIED: Masukkan Nama Petugas untuk otentikasi PDF!"); 
+                return; 
+            }
+
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+
+            // --- 1. BACKGROUND & BORDER ---
+            doc.setDrawColor(185, 28, 28);
+            doc.setLineWidth(1);
+            doc.rect(5, 5, pageWidth - 10, pageHeight - 10);
+            doc.rect(7, 7, pageWidth - 14, pageHeight - 14);
+
+            // --- 2. HEADER ---
+            doc.setFillColor(0, 0, 0);
+            doc.rect(7, 7, pageWidth - 14, 35, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(18);
+            doc.text("SI-KOBAR TACTICAL REPORT", pageWidth / 2, 22, { align: "center" });
+            doc.setFontSize(8);
+            doc.text("UNIT PELAKSANA TEKNIS: LAPAS KELAS IIB TOBELO", pageWidth / 2, 30, { align: "center" });
+
+            // --- 3. BODY DATA ---
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(10);
+            let y = 55;
+            const startX = 20;
+            const colX = 70;
+
+            const addRow = (label, value) => {
+                doc.setFont("helvetica", "bold");
+                doc.setFillColor(245, 245, 245);
+                doc.rect(startX - 2, y - 5, 175, 8, 'F');
+                doc.text(label.toUpperCase(), startX, y);
+                doc.setFont("helvetica", "normal");
+                doc.text(":  " + value, colX, y);
+                y += 12;
+            };
+
+            addRow("Regu Pengamanan", rupam);
+            addRow("Petugas Pelapor", nama);
+            addRow("Sektor Kontrol", area);
+            addRow("Waktu Kejadian", jam);
+            addRow("Tanggal Laporan", tgl);
+            addRow("Koordinat GPS", lokasi);
+
+            y += 5;
+            doc.setFont("helvetica", "bold");
+            doc.setFillColor(185, 28, 28);
+            doc.rect(startX - 2, y - 5, 45, 8, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.text("HASIL PANTAUAN", startX, y);
+
+            y += 10;
+            doc.setTextColor(0, 0, 0);
+            doc.setFont("helvetica", "italic");
+            const splitCatatan = doc.splitTextToSize(catatan, 160);
+            doc.text(splitCatatan, startX, y);
+
+            // Footer
+            const footerY = pageHeight - 30;
+            doc.setFontSize(7);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Dokumen ini dihasilkan secara otomatis oleh sistem SI-KOBAR DALOHA.", pageWidth / 2, footerY + 5, { align: "center" });
+
+            const cleanName = nama.replace(/\s+/g, '_').toUpperCase();
+            doc.save(`LAPORAN_OPS_${cleanName}.pdf`);
+            alert("SYSTEM: PDF Tactic Report telah berhasil diunduh.");
+        }
+
+        // Update Waktu & Tanggal
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('txt-jam').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
+            document.getElementById('txt-tgl').innerText = now.toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
+        }, 1000);
+
+        // Geolocation Otomatis
+        let koordinat = "Lokasi belum didapat";
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                koordinat = `${pos.coords.latitude},${pos.coords.longitude}`;
+                document.getElementById('txt-lokasi').innerText = koordinat;
+            }, (err) => {
+                document.getElementById('txt-lokasi').innerText = "Aktifkan GPS Perangkat!";
+            }, {enableHighAccuracy: true});
+        }
+
+        function kirimWA() {
+            const nama = document.getElementById('nama').value;
+            const rupam = document.getElementById('rupam').value;
+            const area = document.getElementById('area').value;
+            const catatan = document.getElementById('catatan').value || "Aman Terkendali";
+            const jam = document.getElementById('txt-jam').innerText;
+            const tgl = document.getElementById('txt-tgl').innerText;
+            const lokasi = document.getElementById('txt-lokasi').innerText;
+
+            if(!nama) { alert("ERROR: Nama Petugas Required!"); return; }
+
+            const pesan = `*LAPORAN SI-KOBAR LATOBE*%0A` +
+                          `------------------------------------%0A` +
+                          `🛡️ *Regu Pengamanan :* ${rupam}%0A` +
+                          `👤 *Petugas Jaga :* ${nama}%0A` +
+                          `📍 *Area Kontrol :* ${area}%0A` +
+                          `📅 *Tanggal :* ${tgl}%0A` +
+                          `⏰ *Waktu :* ${jam}%0A` +
+                          `🌎 *Titik GPS :* %0Ahttps://www.google.com/maps?q=${lokasi}%0A` +
+                          `------------------------------------%0A` +
+                          `📝 *Kondisi :* ${catatan}%0A` +
+                          `------------------------------------%0A` +
+                          `_Dikirim melalui Sistem Digital Lapas Tobelo_`;
+
+            window.open(`https://wa.me/6282151309630?text=${pesan}`, '_blank');
+        }
+    </script>
+</body>
+</html>
